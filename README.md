@@ -17,8 +17,16 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 export SPREADSHEET_ID=<your sheet id>
+# Optional: use a local credentials file
 export GOOGLE_APPLICATION_CREDENTIALS=credentials.json
+# Or fetch credentials from Secret Manager
+export GOOGLE_CLIENT_SECRET_NAME=projects/693032250063/secrets/webapp_google_client_secret
 python main.py
+```
+Make sure you have authenticated with the Google Cloud SDK so the
+application can access Secret Manager locally:
+```bash
+gcloud auth application-default login
 ```
 
 ## Deploying to Cloud Run

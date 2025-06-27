@@ -8,11 +8,8 @@ from google.cloud import secretmanager
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 SPREADSHEET_ID = os.environ.get('SPREADSHEET_ID')
-SERVICE_ACCOUNT_FILE = os.environ.get(
-    "GOOGLE_APPLICATION_CREDENTIALS", "credentials.json"
-)
-# Path to a Secret Manager secret containing the service account JSON. Leave
-# unset to read credentials from ``SERVICE_ACCOUNT_FILE``.
+# Full resource name for the Secret Manager secret containing the service
+# account JSON. This value is required.
 SECRET_NAME = os.environ.get("GOOGLE_CLIENT_SECRET_NAME")
 
 
@@ -20,21 +17,16 @@ SECRET_NAME = os.environ.get("GOOGLE_CLIENT_SECRET_NAME")
 def _load_credentials():
     """Load service account credentials.
 
-    Credentials are fetched from Secret Manager if ``SECRET_NAME`` is
-    configured, otherwise they are read from ``SERVICE_ACCOUNT_FILE``.
+    Credentials are fetched from Secret Manager using ``GOOGLE_CLIENT_SECRET_NAME``.
     """
-    if SECRET_NAME:
-        client = secretmanager.SecretManagerServiceClient()
-        name = f"{SECRET_NAME}/versions/latest"
-        response = client.access_secret_version(name=name)
-        info = json.loads(response.payload.data.decode("UTF-8"))
-        return service_account.Credentials.from_service_account_info(
-            info, scopes=SCOPES
-        )
+    if not SECRET_NAME:
+        raise RuntimeError("GOOGLE_CLIENT_SECRET_NAME environment variable not set")
 
-    return service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES
-    )
+    client = secretmanager.SecretManagerServiceClient()
+    name = f"{SECRET_NAME}/versions/latest"
+    response = client.access_secret_version(name=name)
+    info = json.loads(response.payload.data.decode("UTF-8"))
+    return service_account.Credentials.from_service_account_info(info, scopes=SCOPES)
 
 
 @lru_cache()

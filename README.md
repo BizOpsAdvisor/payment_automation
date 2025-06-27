@@ -16,7 +16,7 @@ This project exposes a single endpoint for logging invoice data to Google Sheets
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-export SPREADSHEET_ID=<your sheet id>
+export SPREADSHEET_ID=1zdI_qP4Vj77Gx2mSNMJw67EXKZAljMkBgux3DCpi0O0
 export GOOGLE_APPLICATION_CREDENTIALS=credentials.json
 python main.py
 ```

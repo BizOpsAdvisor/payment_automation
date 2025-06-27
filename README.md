@@ -1,0 +1,29 @@
+# Payment Automation Flask Service
+
+This project exposes a single endpoint for logging invoice data to Google Sheets. It is designed to run on Google Cloud Run and built using Cloud Build.
+
+## Structure
+- `app/` – Flask application package
+  - `routes/` – Blueprints
+  - `__init__.py` – application factory
+- `services/` – helper modules (Google Sheets integration)
+- `main.py` – entrypoint used by Gunicorn or `flask run`
+- `sample_data.py` – example payloads for testing
+- `Dockerfile` and `cloudbuild.yaml` – container build configuration
+
+## Running locally
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+export SPREADSHEET_ID=<your sheet id>
+export GOOGLE_APPLICATION_CREDENTIALS=credentials.json
+python main.py
+```
+
+## Deploying to Cloud Run
+Use Cloud Build to build the container and deploy:
+```bash
+gcloud builds submit --config cloudbuild.yaml --substitutions _REGION=<region>,_SERVICE=<service-name>
+```
+Then deploy the resulting image to Cloud Run.

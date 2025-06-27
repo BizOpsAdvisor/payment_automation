@@ -9,12 +9,11 @@ from google.cloud import secretmanager
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 SPREADSHEET_ID = os.environ.get('SPREADSHEET_ID')
 SERVICE_ACCOUNT_FILE = os.environ.get(
-    'GOOGLE_APPLICATION_CREDENTIALS', 'credentials.json'
+    "GOOGLE_APPLICATION_CREDENTIALS", "credentials.json"
 )
-SECRET_NAME = os.environ.get(
-    'GOOGLE_CLIENT_SECRET_NAME',
-    'projects/693032250063/secrets/webapp_google_client_secret',
-)
+# Path to a Secret Manager secret containing the service account JSON. Leave
+# unset to read credentials from ``SERVICE_ACCOUNT_FILE``.
+SECRET_NAME = os.environ.get("GOOGLE_CLIENT_SECRET_NAME")
 
 
 @lru_cache()
@@ -40,12 +39,14 @@ def _load_credentials():
 
 @lru_cache()
 def _get_sheet():
+    """Return a cached Google Sheets service client."""
     credentials = _load_credentials()
     service = build("sheets", "v4", credentials=credentials)
     return service.spreadsheets()
 
 
 def log_invoice(*, line_items=None, order=None):
+    """Log invoice data to Google Sheets."""
     sheet = _get_sheet()
 
     if line_items:

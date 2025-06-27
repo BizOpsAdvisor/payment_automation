@@ -16,9 +16,14 @@ This project exposes a single endpoint for logging invoice data to Google Sheets
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-export SPREADSHEET_ID='1zdI_qP4Vj77Gx2mSNMJw67EXKZAljMkBgux3DCpi0O0'
-export GOOGLE_APPLICATION_CREDENTIALS=desktop_credentials.json
+export SPREADSHEET_ID=1zdI_qP4Vj77Gx2mSNMJw67EXKZAljMkBgux3DCpi0O0
+export GOOGLE_APPLICATION_CREDENTIALS=credentials.json
 python main.py
+```
+Make sure you have authenticated with the Google Cloud SDK so the
+application can access Secret Manager locally:
+```bash
+gcloud auth application-default login
 ```
 
 ## Deploying to Cloud Run

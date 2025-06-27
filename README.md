@@ -19,7 +19,8 @@ pip install -r requirements.txt
 export SPREADSHEET_ID=<your sheet id>
 # Optional: use a local credentials file
 export GOOGLE_APPLICATION_CREDENTIALS=credentials.json
-# Or fetch credentials from Secret Manager
+# Or fetch credentials from Secret Manager. Set this to the full resource
+# name of your secret containing the service account JSON.
 export GOOGLE_CLIENT_SECRET_NAME=projects/693032250063/secrets/webapp_google_client_secret
 python main.py
 ```

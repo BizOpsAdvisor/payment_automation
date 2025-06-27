@@ -1,7 +1,8 @@
+import os
 from flask import Flask
-from app.routes.invoice import invoice_bp
+from app import create_app
 
-def create_app():
-    app = Flask(__name__)
-    app.register_blueprint(invoice_bp, url_prefix='/log-invoice')
-    return app
+app = create_app()
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))

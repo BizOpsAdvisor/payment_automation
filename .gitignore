@@ -1,4 +1,13 @@
+# Template .gitignore for BizOps Advisors Python Projects
+
 __pycache__/
 *.pyc
 venv/
 .env
+
+# Google API credentials and token files
+credentials.json
+token.json
+
+# VS Code settings
+.vscode/

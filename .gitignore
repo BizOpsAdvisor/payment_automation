@@ -6,7 +6,7 @@ venv/
 .env
 
 # Google API credentials and token files
-*credentials.json
+desktop_credentials.json
 token.json
 
 # VS Code settings

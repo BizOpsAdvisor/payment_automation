@@ -17,9 +17,6 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 export SPREADSHEET_ID=1zdI_qP4Vj77Gx2mSNMJw67EXKZAljMkBgux3DCpi0O0
-export GOOGLE_APPLICATION_CREDENTIALS=desktop_credentials.json
-# # Or fetch credentials from Secret Manager. Set this to the full resource
-# # name of your secret containing the service account JSON.
 export GOOGLE_CLIENT_SECRET_NAME=projects/693032250063/secrets/webapp_google_client_secret
 python main.py
 ```

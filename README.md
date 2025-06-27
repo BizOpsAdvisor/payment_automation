@@ -20,11 +20,6 @@ export SPREADSHEET_ID=<your sheet id>
 export GOOGLE_APPLICATION_CREDENTIALS=credentials.json
 python main.py
 ```
-Make sure you have authenticated with the Google Cloud SDK so the
-application can access Secret Manager locally:
-```bash
-gcloud auth application-default login
-```
 
 ## Deploying to Cloud Run
 Use Cloud Build to build the container and deploy:

@@ -35,7 +35,9 @@ Then deploy the resulting image to Cloud Run.
 
 ## Google Sheets setup
 
-The service account retrieved from Secret Manager must have edit access to the
-target spreadsheet. Share the spreadsheet with the service account's email
-address. The spreadsheet should contain two sheets named `bank_input` and
-`orders`, which are used when appending data from the API.
+The service account retrieved from Secret Manager must have **edit** access to
+the target spreadsheet. Share the spreadsheet with the service account's email
+address. Ensure the spreadsheet contains two sheets named `bank_input` and
+`orders`. These names are referenced directly in the code when appending data,
+so they must match exactly. It also helps to create a header row in each sheet
+before sending data so new rows are added below the headers.

@@ -14,7 +14,6 @@ SPREADSHEET_ID = os.environ.get('SPREADSHEET_ID')
 # account JSON. This value is required.
 SECRET_NAME = os.environ.get("GOOGLE_CLIENT_SECRET_NAME")
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -41,7 +40,12 @@ def _get_sheet():
     """Return a cached Google Sheets service client."""
     credentials = _load_credentials()
     logger.info("Building Google Sheets client")
-    service = build("sheets", "v4", credentials=credentials)
+    service = build(
+        "sheets",
+        "v4",
+        credentials=credentials,
+        cache_discovery=False,
+    )
     return service.spreadsheets()
 
 
@@ -57,27 +61,31 @@ def log_invoice(*, line_items=None, order=None):
         try:
             result = sheet.values().append(
                 spreadsheetId=SPREADSHEET_ID,
-                range='bank_input!A1',
-                valueInputOption='USER_ENTERED',
-                insertDataOption='INSERT_ROWS',
-                body={'values': line_items},
+                range="bank_input!A1",
+                valueInputOption="USER_ENTERED",
+                insertDataOption="INSERT_ROWS",
+                body={"values": line_items},
             ).execute()
-            logger.info("bank_input append result: %s", result.get('updates'))
+            logger.info("bank_input append result: %s", result.get("updates"))
         except HttpError as err:
             logger.error("Failed to append line items: %s", err)
             raise
+    else:
+        logger.info("No line items provided; skipping bank_input update")
 
     if order:
         logger.info("Appending 1 row to orders sheet")
         try:
             result = sheet.values().append(
                 spreadsheetId=SPREADSHEET_ID,
-                range='orders!A1',
-                valueInputOption='USER_ENTERED',
-                insertDataOption='INSERT_ROWS',
-                body={'values': [order]},
+                range="orders!A1",
+                valueInputOption="USER_ENTERED",
+                insertDataOption="INSERT_ROWS",
+                body={"values": [order]},
             ).execute()
-            logger.info("orders append result: %s", result.get('updates'))
+            logger.info("orders append result: %s", result.get("updates"))
         except HttpError as err:
             logger.error("Failed to append order: %s", err)
             raise
+    else:
+        logger.info("No order data provided; skipping orders update")

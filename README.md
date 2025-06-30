@@ -19,10 +19,12 @@ pip install -r requirements.txt
 # export GOOGLE_CLIENT_SECRET_NAME=projects/693032250063/secrets/webapp_google_client_secret
 export SPREADSHEET_ID=1zdI_qP4Vj77Gx2mSNMJw67EXKZAljMkBgux3DCpi0O0
 export GOOGLE_CLIENT_SECRET_NAME=projects/693032250063/secrets/g_auth_kz_pmt
+export INVOICE_API_KEY=my-secret-key
 export FLASK_DEBUG=1
 python main.py
 curl -X POST http://localhost:8080/log-invoice/ \
   -H "Content-Type: application/json" \
+  -H "X-Api-Key: $INVOICE_API_KEY" \
   -d '{
     "line_items": [
       ["", "Трубы профильные 40х40х1,2", "1,133", "т", "482000", "546106", "2025-06-27T04:06:11.034973", "ТОО \"Лидер-Металл\"", "081240002981", "14673"],
@@ -43,6 +45,10 @@ curl -X POST http://localhost:8080/log-invoice/ \
   }'
 
 ```
+The `INVOICE_API_KEY` value acts as a shared secret. Clients must send this
+value in the `X-Api-Key` header on each request. Requests without the correct
+header will receive a `403 Forbidden` response.
+
 Make sure you have authenticated with the Google Cloud SDK so the
 application can access Secret Manager locally:
 ```bash

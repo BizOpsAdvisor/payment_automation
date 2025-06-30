@@ -12,6 +12,13 @@ paths:
       operationId: logInvoice
       summary: Log invoice data to Google Sheets
       description: Sends line_items and order data to the Cloud Run service, which logs the invoice into Google Sheets.
+      parameters:
+        - in: header
+          name: X-Api-Key
+          required: true
+          schema:
+            type: string
+          description: API key for authenticating requests.
       requestBody:
         required: true
         content:
@@ -48,3 +55,13 @@ paths:
                   message:
                     type: string
                     example: Logged to Google Sheets.
+        "403":
+          description: Unauthorized - invalid or missing X-Api-Key header
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: Unauthorized

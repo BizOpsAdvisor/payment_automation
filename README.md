@@ -69,6 +69,21 @@ target spreadsheet. Share the spreadsheet with the service account's email
 address. The spreadsheet should contain two sheets named `bank_input` and
 `orders`, which are used when appending data from the API.
 
+## Using with Custom GPT Actions
+
+The included `openapi.yaml` defines an `ApiKeyAuth` scheme so Custom GPTs can
+authenticate by sending an `X-Api-Key` header. Import this file into the GPT
+builder and configure the Action's authentication to use your key:
+
+1. Select **API Key** and choose **Custom** location.
+2. Enter `X-Api-Key` as the header name and paste the value of
+   `INVOICE_API_KEY` used on Cloud Run.
+3. Save and test the Action. A successful request will return:
+
+   ```json
+   {"status": "success", "message": "Logged to Google Sheets."}
+   ```
+
 ## OAuth proxy setup
 
 The service also exposes two helper endpoints for OAuth 2.0 flows used by

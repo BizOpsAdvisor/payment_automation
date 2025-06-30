@@ -16,15 +16,15 @@ This project exposes a single endpoint for logging invoice data to Google Sheets
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-export SPREADSHEET_ID=1zdI_qP4Vj77Gx2mSNMJw67EXKZAljMkBgux3DCpi0O0
 # export GOOGLE_CLIENT_SECRET_NAME=projects/693032250063/secrets/webapp_google_client_secret
+export SPREADSHEET_ID=1zdI_qP4Vj77Gx2mSNMJw67EXKZAljMkBgux3DCpi0O0
 export GOOGLE_CLIENT_SECRET_NAME=projects/693032250063/secrets/g_auth_kz_pmt
 export FLASK_DEBUG=1
 python main.py
 curl -X POST http://localhost:8080/log-invoice/ \
   -H "Content-Type: application/json" \
   -d '{
-    "kbank_input_values": [
+    "line_items": [
       ["", "Трубы профильные 40х40х1,2", "1,133", "т", "482000", "546106", "2025-06-27T04:06:11.034973", "ТОО \"Лидер-Металл\"", "081240002981", "14673"],
       ["", "Трубы профильные 80х80х5 по ГОСТ 8639-82", "1,374", "т", "447000", "614178", "2025-06-27T04:06:11.034973", "ТОО \"Лидер-Металл\"", "081240002981", "14673"],
       ["", "Резка металла", "10", "шт", "200", "2000", "2025-06-27T04:06:11.034973", "ТОО \"Лидер-Металл\"", "081240002981", "14673"],
@@ -37,7 +37,7 @@ curl -X POST http://localhost:8080/log-invoice/ \
       ["", "Трубы профильные 80х40х3 ГОСТ 8645-68", "0,316", "т", "437000", "138092", "2025-06-27T04:06:11.034973", "ТОО \"Лидер-Металл\"", "081240002981", "14673"],
       ["", "Резка металла", "22", "шт", "660", "14520", "2025-06-27T04:06:11.034973", "ТОО \"Лидер-Металл\"", "081240002981", "14673"]
     ],
-    "orders_values": [
+    "order": [
       ["081240002981", "KZ62601A861003570421", "ТОО \"Лидер-Металл\"", "17", "710", "Счет на оплату № Т-14673 от 25 июня 2025 г.", "6172851", "25.06.2025"]
     ]
   }'
@@ -52,7 +52,7 @@ gcloud auth application-default login
 ## Deploying to Cloud Run
 Use Cloud Build to build the container and deploy:
 ```bash
-gcloud builds submit --config cloudbuild.yaml --substitutions _REGION=<region>,_SERVICE=<service-name>
+gcloud builds submit --config cloudbuild.yaml --substitutions _REGION=europe-west1,_SERVICE=kz-pmt-automation
 ```
 Then deploy the resulting image to Cloud Run.
 

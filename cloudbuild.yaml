@@ -1,5 +1,38 @@
+options:
+  substitutionOption: ALLOW_LOOSE  # allows CLI overrides
+
+substitutions:
+  _REPO_NAME: "kz-pmt-automation"
+  _COMMIT_SHA: "latest"
+  _REGION: "europe-west1"
+  _SERVICE_NAME: "kz-pmt-automation"
+
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', '$PROJECT_ID/$REPO_NAME:$COMMIT_SHA', '.']
+    args:
+      - build
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/${_REPO_NAME}:${_COMMIT_SHA}'
+      - '.'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - push
+      - 'gcr.io/$PROJECT_ID/${_REPO_NAME}:${_COMMIT_SHA}'
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - '${_SERVICE_NAME}'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/${_REPO_NAME}:${_COMMIT_SHA}'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - managed
+      - '--allow-unauthenticated'
+
 images:
-  - '$PROJECT_ID/$REPO_NAME:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/${_REPO_NAME}:${_COMMIT_SHA}'

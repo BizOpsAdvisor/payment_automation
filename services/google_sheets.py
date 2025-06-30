@@ -81,7 +81,7 @@ def log_invoice(*, line_items=None, order=None):
                 range="orders!A1",
                 valueInputOption="USER_ENTERED",
                 insertDataOption="INSERT_ROWS",
-                body={"values": [order]},
+                body={"values": order},
             ).execute()
             logger.info("orders append result: %s", result.get("updates"))
         except HttpError as err:

@@ -12,27 +12,27 @@ steps:
     args:
       - build
       - '-t'
-      - 'gcr.io/$PROJECT_ID/${_REPO_NAME}:${_COMMIT_SHA}'
+      - 'gcr.io/$PROJECT_ID/$_REPO_NAME:$_COMMIT_SHA'
       - '.'
 
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - push
-      - 'gcr.io/$PROJECT_ID/${_REPO_NAME}:${_COMMIT_SHA}'
+      - 'gcr.io/$PROJECT_ID/$_REPO_NAME:$_COMMIT_SHA'
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       - run
       - deploy
-      - '${_SERVICE_NAME}'
+      - '$_SERVICE_NAME'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/${_REPO_NAME}:${_COMMIT_SHA}'
+      - 'gcr.io/$PROJECT_ID/$_REPO_NAME:$_COMMIT_SHA'
       - '--region'
-      - '${_REGION}'
+      - '$_REGION'
       - '--platform'
       - managed
       - '--allow-unauthenticated'
 
 images:
-  - 'gcr.io/$PROJECT_ID/${_REPO_NAME}:${_COMMIT_SHA}'
+  - 'gcr.io/$PROJECT_ID/$_REPO_NAME:$_COMMIT_SHA'

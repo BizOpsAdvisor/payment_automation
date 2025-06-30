@@ -1,0 +1,50 @@
+openapi: 3.1.0
+info:
+  title: Log Invoice API
+  description: Send invoice data (line_items and order) to a Cloud Run service for logging into Google Sheets.
+  version: 1.0.0
+servers:
+  - url: https://kz-pmt-automation-693032250063.europe-west1.run.app
+    description: Cloud Run base URL
+paths:
+  /log-invoice/:
+    post:
+      operationId: logInvoice
+      summary: Log invoice data to Google Sheets
+      description: Sends line_items and order data to the Cloud Run service, which logs the invoice into Google Sheets.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                line_items:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: string
+                order:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: string
+              required:
+                - line_items
+                - order
+      responses:
+        "200":
+          description: Successful response indicating invoice was logged
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Logged to Google Sheets.

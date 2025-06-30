@@ -6,12 +6,20 @@ info:
 servers:
   - url: https://kz-pmt-automation-693032250063.europe-west1.run.app
     description: Cloud Run base URL
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Api-Key
 paths:
   /log-invoice/:
     post:
       operationId: logInvoice
       summary: Log invoice data to Google Sheets
       description: Sends line_items and order data to the Cloud Run service, which logs the invoice into Google Sheets.
+      security:
+        - ApiKeyAuth: []
       requestBody:
         required: true
         content:
@@ -48,3 +56,13 @@ paths:
                   message:
                     type: string
                     example: Logged to Google Sheets.
+        "403":
+          description: Unauthorized - invalid or missing X-Api-Key header
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: Unauthorized

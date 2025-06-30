@@ -19,10 +19,12 @@ pip install -r requirements.txt
 # export GOOGLE_CLIENT_SECRET_NAME=projects/693032250063/secrets/webapp_google_client_secret
 export SPREADSHEET_ID=1zdI_qP4Vj77Gx2mSNMJw67EXKZAljMkBgux3DCpi0O0
 export GOOGLE_CLIENT_SECRET_NAME=projects/693032250063/secrets/g_auth_kz_pmt
+export INVOICE_API_KEY=my-secret-key
 export FLASK_DEBUG=1
 python main.py
 curl -X POST http://localhost:8080/log-invoice/ \
   -H "Content-Type: application/json" \
+  -H "X-Api-Key: $INVOICE_API_KEY" \
   -d '{
     "line_items": [
       ["", "Трубы профильные 40х40х1,2", "1,133", "т", "482000", "546106", "2025-06-27T04:06:11.034973", "ТОО \"Лидер-Металл\"", "081240002981", "14673"],
@@ -43,6 +45,10 @@ curl -X POST http://localhost:8080/log-invoice/ \
   }'
 
 ```
+The `INVOICE_API_KEY` value acts as a shared secret. Clients must send this
+value in the `X-Api-Key` header on each request. Requests without the correct
+header will receive a `403 Forbidden` response.
+
 Make sure you have authenticated with the Google Cloud SDK so the
 application can access Secret Manager locally:
 ```bash
@@ -62,3 +68,39 @@ The service account retrieved from Secret Manager must have edit access to the
 target spreadsheet. Share the spreadsheet with the service account's email
 address. The spreadsheet should contain two sheets named `bank_input` and
 `orders`, which are used when appending data from the API.
+
+## Using with Custom GPT Actions
+
+The included `openapi.yaml` defines an `ApiKeyAuth` scheme so Custom GPTs can
+authenticate by sending an `X-Api-Key` header. Import this file into the GPT
+builder and configure the Action's authentication to use your key:
+
+1. Select **API Key** and choose **Custom** location.
+2. Enter `X-Api-Key` as the header name and paste the value of
+   `INVOICE_API_KEY` used on Cloud Run.
+3. Save and test the Action. A successful request will return:
+
+   ```json
+   {"status": "success", "message": "Logged to Google Sheets."}
+   ```
+
+## OAuth proxy setup
+
+The service also exposes two helper endpoints for OAuth 2.0 flows used by
+Custom GPT Actions:
+
+* `/oauth2/auth` – redirects the user to Google's consent screen.
+* `/oauth2/token` – exchanges the authorization code for an access token.
+
+Set the following environment variables when deploying to Cloud Run so the
+proxy can call Google's OAuth endpoints:
+
+```bash
+export GOOGLE_OAUTH_CLIENT_ID=<your-client-id>
+export GOOGLE_OAUTH_CLIENT_SECRET=<your-client-secret>
+export OAUTH_REDIRECT_URI=<OpenAI-callback-URL>
+```
+
+`OAUTH_REDIRECT_URI` should match the callback URL provided by the GPT Builder.
+All three URLs (your API host, Authorization URL and Token URL) will then share
+the same `*.run.app` domain, satisfying the builder's domain requirement.

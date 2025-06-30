@@ -55,3 +55,10 @@ Use Cloud Build to build the container and deploy:
 gcloud builds submit --config cloudbuild.yaml --substitutions _REGION=<region>,_SERVICE=<service-name>
 ```
 Then deploy the resulting image to Cloud Run.
+
+## Google Sheets setup
+
+The service account retrieved from Secret Manager must have edit access to the
+target spreadsheet. Share the spreadsheet with the service account's email
+address. The spreadsheet should contain two sheets named `bank_input` and
+`orders`, which are used when appending data from the API.

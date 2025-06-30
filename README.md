@@ -68,3 +68,24 @@ The service account retrieved from Secret Manager must have edit access to the
 target spreadsheet. Share the spreadsheet with the service account's email
 address. The spreadsheet should contain two sheets named `bank_input` and
 `orders`, which are used when appending data from the API.
+
+## OAuth proxy setup
+
+The service also exposes two helper endpoints for OAuth 2.0 flows used by
+Custom GPT Actions:
+
+* `/oauth2/auth` – redirects the user to Google's consent screen.
+* `/oauth2/token` – exchanges the authorization code for an access token.
+
+Set the following environment variables when deploying to Cloud Run so the
+proxy can call Google's OAuth endpoints:
+
+```bash
+export GOOGLE_OAUTH_CLIENT_ID=<your-client-id>
+export GOOGLE_OAUTH_CLIENT_SECRET=<your-client-secret>
+export OAUTH_REDIRECT_URI=<OpenAI-callback-URL>
+```
+
+`OAUTH_REDIRECT_URI` should match the callback URL provided by the GPT Builder.
+All three URLs (your API host, Authorization URL and Token URL) will then share
+the same `*.run.app` domain, satisfying the builder's domain requirement.
